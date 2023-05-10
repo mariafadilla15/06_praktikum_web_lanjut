@@ -29,3 +29,6 @@ Route::resource('mahasiswas', MahasiswaController::class);
 
 #JS9 - Latihan
 Route::get('mahasiswas/nilai/{Nim}', [MahasiswaController::class, 'khs']);
+
+#JS10 - Tugas Praktikum
+Route::get('mahasiswas/cetakKHS/{Nim}', [MahasiswaController::class, 'cetak_khs'])->name('print');

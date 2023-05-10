@@ -6,6 +6,8 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Kelas;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\PDF;
 
 class MahasiswaController extends Controller
 {
@@ -63,9 +65,13 @@ class MahasiswaController extends Controller
 
             //fungsi eloquent untuk menambah data
             //Mahasiswa::create($request->all());
+            if ($request->file('image')){
+                $image_name = $request->file('image')->store('images', 'public');
+            }
             $mahasiswas = new Mahasiswa;
             $mahasiswas->Nim=$request->get('Nim');
             $mahasiswas->Nama=$request->get('Nama');
+            $mahasiswas->featured_image=$image_name;
             $mahasiswas->Jurusan=$request->get('Jurusan');
             $mahasiswas->No_Handphone=$request->get('No_Handphone');
             $mahasiswas->Email=$request->get('Email');
@@ -111,6 +117,11 @@ class MahasiswaController extends Controller
             'Tanggal_Lahir' => 'required',
         ]);
 
+        $Mahasiswa = Mahasiswa::find($Nim);
+        if ($Mahasiswa->featured_image && file_exists(storage_path('app/public/' . $Mahasiswa->featured_image))){
+            Storage::delete('public/' . $Mahasiswa->featured_image);
+        }
+
         $mahasiswas = Mahasiswa::with('Kelas')->where('Nim', $Nim)->first();
         $mahasiswas->Nim = $request->get('Nim');
         $mahasiswas->Nama = $request->get('Nama');
@@ -118,6 +129,9 @@ class MahasiswaController extends Controller
         $mahasiswas->No_Handphone = $request->get('No_Handphone');
         $mahasiswas->Email = $request->get('Email');
         $mahasiswas->Tanggal_Lahir = $request->get('Tanggal_Lahir');
+
+        $image_name = $request->file('image')->store('images', 'public');
+        $mahasiswas->featured_image = $image_name;
         
         $kelas = new Kelas;
         $kelas->id = $request->get('Kelas');
@@ -148,5 +162,13 @@ class MahasiswaController extends Controller
         $mahasiswa = Mahasiswa::find($Nim);
 
         return view('mahasiswas.khs', compact('mahasiswa'));
+    }
+
+    #JS10 - Tugas Praktikum
+    public function cetak_khs($Nim){
+        $mahasiswa = Mahasiswa::find($Nim);
+        
+        $pdf = PDF::loadview('mahasiswas.cetakKHS',['mahasiswa'=>$mahasiswa]);
+        return $pdf->stream();
     }
 };

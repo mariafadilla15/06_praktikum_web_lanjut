@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Mahasiswa;
+use App\Models\Kelas;
 
 class Mahasiswa extends Model
 {
@@ -19,6 +19,7 @@ class Mahasiswa extends Model
     protected $fillable = [
         'Nim',
         'Nama',
+        'featured_image',
         'Kelas',
         'Jurusan',
         'No_Handphone',

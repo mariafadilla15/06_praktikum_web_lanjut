@@ -155,6 +155,8 @@ return [
     */
 
     'providers' => [
+        //JS10 - Tugas Praktikum
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Laravel Framework Service Providers...
@@ -209,6 +211,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        //JS10 - Tugas Praktikum
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
