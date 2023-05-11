@@ -65,6 +65,7 @@ class MahasiswaController extends Controller
 
             //fungsi eloquent untuk menambah data
             //Mahasiswa::create($request->all());
+            $image_name = null;
             if ($request->file('image')){
                 $image_name = $request->file('image')->store('images', 'public');
             }
@@ -117,10 +118,8 @@ class MahasiswaController extends Controller
             'Tanggal_Lahir' => 'required',
         ]);
 
+        //mencari mahasiswa berdasarkan nim
         $Mahasiswa = Mahasiswa::find($Nim);
-        if ($Mahasiswa->featured_image && file_exists(storage_path('app/public/' . $Mahasiswa->featured_image))){
-            Storage::delete('public/' . $Mahasiswa->featured_image);
-        }
 
         $mahasiswas = Mahasiswa::with('Kelas')->where('Nim', $Nim)->first();
         $mahasiswas->Nim = $request->get('Nim');
@@ -130,6 +129,11 @@ class MahasiswaController extends Controller
         $mahasiswas->Email = $request->get('Email');
         $mahasiswas->Tanggal_Lahir = $request->get('Tanggal_Lahir');
 
+        // menghapus gambar lama jika ada
+        if ($Mahasiswa->featured_image && file_exists(storage_path('app/public/' . $Mahasiswa->featured_image))){
+            Storage::delete('public/' . $Mahasiswa->featured_image);
+        }
+        // menyimpan file gambar yang baru
         $image_name = $request->file('image')->store('images', 'public');
         $mahasiswas->featured_image = $image_name;
         
